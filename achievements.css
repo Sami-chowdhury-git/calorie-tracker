@@ -1,0 +1,79 @@
+/* ═══════════════════════════════════════════ */
+/* ACHIEVEMENTS — Streaks & Badges             */
+/* ═══════════════════════════════════════════ */
+
+.achievements-header { padding: 72px 0 8px; }
+.achievements-header h2 { font-size: 1.5rem; }
+.achievements-header p { color: var(--text-secondary); font-size: 0.85rem; margin-top: 2px; }
+
+/* Streak Hero */
+.streak-hero {
+  background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(79,70,229,0.06));
+  border: 1px solid var(--border-color-strong);
+  border-radius: var(--radius-xl); padding: 36px 24px;
+  text-align: center; margin: 16px 0; position: relative; overflow: hidden;
+}
+.streak-hero::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 30%, rgba(99,102,241,0.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.streak-flame { margin-bottom: 12px; }
+.streak-flame i {
+  width: 48px; height: 48px; color: var(--text-muted);
+  animation: float 3s ease-in-out infinite;
+}
+.streak-hero.active .streak-flame i {
+  color: #f59e0b;
+  filter: drop-shadow(0 0 12px rgba(245,158,11,0.5));
+}
+
+.streak-info { position: relative; }
+.streak-count {
+  font-family: 'Outfit'; font-size: 3.5rem; font-weight: 800; display: block;
+}
+.streak-label { color: var(--text-secondary); font-size: 0.9rem; display: block; }
+.streak-message { color: var(--text-muted); font-size: 0.82rem; margin-top: 10px; position: relative; }
+
+/* Badges */
+.badges-section { margin-top: 28px; }
+.badges-section h3 { font-size: 1.1rem; margin-bottom: 16px; }
+
+.badges-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+}
+.badge-card {
+  background: var(--bg-tertiary); border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-lg); padding: 18px 12px;
+  text-align: center; transition: var(--transition);
+  position: relative; overflow: hidden;
+}
+.badge-card.locked { opacity: 0.35; filter: grayscale(0.8); }
+.badge-card.unlocked {
+  border-color: var(--accent-primary);
+  animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.badge-card.unlocked::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at center, var(--accent-glow), transparent 70%);
+  opacity: 0.2; pointer-events: none;
+}
+
+.badge-icon { font-size: 2rem; display: block; margin-bottom: 10px; }
+.badge-card.unlocked .badge-icon { animation: pulse 2.5s ease-in-out infinite; }
+
+.badge-name { font-weight: 600; font-size: 0.78rem; display: block; }
+.badge-desc {
+  font-size: 0.68rem; color: var(--text-muted); margin-top: 4px;
+  line-height: 1.3; display: block;
+}
+.badge-date {
+  font-size: 0.62rem; color: var(--accent-secondary); margin-top: 6px; display: block;
+  opacity: 0.7;
+}
+
+@media (max-width: 480px) {
+  .badges-grid { grid-template-columns: repeat(2, 1fr); }
+  .streak-count { font-size: 2.5rem; }
+}

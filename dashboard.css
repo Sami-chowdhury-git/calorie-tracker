@@ -1,0 +1,75 @@
+/* ═══════════════════════════════════════════ */
+/* DASHBOARD — Rings, Stats, Daily View        */
+/* ═══════════════════════════════════════════ */
+
+.dash-greeting { padding: 72px 0 8px; }
+.dash-greeting h2 { font-size: 1.5rem; }
+.dash-greeting p { color: var(--text-secondary); font-size: 0.85rem; margin-top: 2px; }
+
+/* Calorie Ring */
+.calorie-ring-container {
+  position: relative; width: 220px; height: 220px;
+  margin: 24px auto;
+}
+.calorie-ring { width: 100%; height: 100%; transform: rotate(-90deg); }
+
+.ring-bg { fill: none; stroke: var(--bg-tertiary); stroke-width: 8; }
+.ring-fill {
+  fill: none; stroke: var(--accent-primary); stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.5s ease;
+  filter: drop-shadow(0 0 6px var(--accent-glow));
+}
+.ring-fill.warning { stroke: var(--warning); filter: drop-shadow(0 0 6px rgba(245,158,11,0.3)); }
+.ring-fill.danger { stroke: var(--danger); filter: drop-shadow(0 0 6px rgba(239,68,68,0.3)); }
+
+.calorie-ring-info {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%); text-align: center;
+}
+.ring-remaining {
+  font-family: 'Outfit'; font-size: 2.5rem; font-weight: 700; display: block;
+}
+.ring-label { color: var(--text-secondary); font-size: 0.85rem; }
+.ring-detail {
+  font-size: 0.75rem; color: var(--text-muted);
+  margin-top: 6px; display: flex; gap: 6px; justify-content: center;
+}
+.ring-sep { opacity: 0.5; }
+
+/* Macro Rings */
+.macro-rings-row {
+  display: flex; justify-content: center; gap: 20px; margin: 24px 0;
+}
+.macro-ring-card { text-align: center; }
+.macro-ring { width: 80px; height: 80px; transform: rotate(-90deg); }
+.macro-ring .ring-bg { stroke-width: 6; }
+.macro-ring .ring-fill { stroke-width: 6; }
+.ring-fill.protein { stroke: var(--protein-color); filter: drop-shadow(0 0 4px rgba(129,140,248,0.3)); }
+.ring-fill.carbs { stroke: var(--carbs-color); filter: drop-shadow(0 0 4px rgba(56,189,248,0.3)); }
+.ring-fill.fats { stroke: var(--fats-color); filter: drop-shadow(0 0 4px rgba(244,114,182,0.3)); }
+
+.macro-ring-info { margin-top: 8px; }
+.macro-ring-value { font-weight: 600; font-size: 0.95rem; }
+.macro-ring-label { color: var(--text-secondary); font-size: 0.75rem; display: block; margin-top: 2px; }
+.macro-ring-target { color: var(--text-muted); font-size: 0.7rem; }
+
+/* Stats Row */
+.dash-stats-row {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 12px; margin: 16px 0;
+}
+.dash-stat-card {
+  background: var(--bg-card); backdrop-filter: blur(8px);
+  border: 1px solid var(--border-color); border-radius: var(--radius-lg);
+  padding: 16px; text-align: center;
+}
+.dash-stat-card i { color: var(--accent-primary); width: 20px; height: 20px; margin-bottom: 8px; }
+.stat-value {
+  font-family: 'Outfit'; font-size: 1.5rem; font-weight: 700; display: block;
+}
+.stat-label { color: var(--text-secondary); font-size: 0.72rem; }
+
+/* Meals Preview */
+.dash-meals-preview { margin-top: 20px; }
+.dash-meals-list { display: flex; flex-direction: column; gap: 8px; }

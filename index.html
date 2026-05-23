@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Track your calories, macros, and fitness goals with an intelligent AI-powered food diary." />
+  <title>CalTrack — Smart Calorie & Macro Tracker</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/onboarding.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/meal-log.css" />
+  <link rel="stylesheet" href="css/diary.css" />
+  <link rel="stylesheet" href="css/analytics.css" />
+  <link rel="stylesheet" href="css/achievements.css" />
+
+  <!-- Inline utility for Gemini loading spinner -->
+  <style>.spin-icon { animation: spin 1s linear infinite; display: inline-block; }</style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- AUTH SCREEN                                  -->
+  <!-- ═══════════════════════════════════════════ -->
+  <section id="auth-screen" class="screen active">
+    <div class="auth-container">
+      <div class="auth-brand">
+        <div class="auth-logo">
+          <i data-lucide="flame" class="logo-icon"></i>
+        </div>
+        <h1 class="brand-title">Cal<span class="accent">Track</span></h1>
+        <p class="brand-subtitle">Your intelligent nutrition companion</p>
+      </div>
+
+      <!-- Login Form -->
+      <form id="auth-login-form" class="auth-form">
+        <h2 class="auth-heading">Welcome back</h2>
+        <div class="input-group">
+          <i data-lucide="mail" class="input-icon"></i>
+          <input type="email" id="login-email" class="input-field" placeholder="Email address" required autocomplete="email" />
+        </div>
+        <div class="input-group">
+          <i data-lucide="lock" class="input-icon"></i>
+          <input type="password" id="login-password" class="input-field" placeholder="Password" required autocomplete="current-password" />
+        </div>
+        <button type="submit" id="login-submit-btn" class="btn btn-primary btn-full">
+          <span>Sign In</span>
+          <i data-lucide="arrow-right"></i>
+        </button>
+        <p class="auth-switch">
+          Don't have an account? <a href="#" id="show-signup">Create one</a>
+        </p>
+      </form>
+
+      <!-- Signup Form -->
+      <form id="auth-signup-form" class="auth-form hidden">
+        <h2 class="auth-heading">Create account</h2>
+        <div class="input-group">
+          <i data-lucide="user" class="input-icon"></i>
+          <input type="text" id="signup-name" class="input-field" placeholder="Full name" required autocomplete="name" />
+        </div>
+        <div class="input-group">
+          <i data-lucide="mail" class="input-icon"></i>
+          <input type="email" id="signup-email" class="input-field" placeholder="Email address" required autocomplete="email" />
+        </div>
+        <div class="input-group">
+          <i data-lucide="lock" class="input-icon"></i>
+          <input type="password" id="signup-password" class="input-field" placeholder="Password (min 6 chars)" required minlength="6" autocomplete="new-password" />
+        </div>
+        <button type="submit" id="signup-submit-btn" class="btn btn-primary btn-full">
+          <span>Get Started</span>
+          <i data-lucide="sparkles"></i>
+        </button>
+        <p class="auth-switch">
+          Already have an account? <a href="#" id="show-login">Sign in</a>
+        </p>
+      </form>
+    </div>
+    <div class="auth-bg-glow"></div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- ONBOARDING WIZARD                            -->
+  <!-- ═══════════════════════════════════════════ -->
+  <section id="onboarding-screen" class="screen">
+    <div class="onboarding-container">
+      <!-- Progress Bar -->
+      <div id="onboarding-progress" class="ob-progress">
+        <div class="ob-progress-track">
+          <div class="ob-progress-fill" id="ob-progress-fill"></div>
+        </div>
+        <div class="ob-step-dots">
+          <span class="ob-dot active" data-step="1">1</span>
+          <span class="ob-dot" data-step="2">2</span>
+          <span class="ob-dot" data-step="3">3</span>
+          <span class="ob-dot" data-step="4">4</span>
+          <span class="ob-dot" data-step="5">5</span>
+        </div>
+      </div>
+
+      <!-- Step 1: Personal Info -->
+      <div class="onboarding-step active" data-step="1">
+        <div class="ob-step-header">
+          <i data-lucide="user" class="ob-step-icon"></i>
+          <h2>Let's get to know you</h2>
+          <p>Tell us a bit about yourself to personalize your experience.</p>
+        </div>
+        <div class="ob-form-grid">
+          <div class="input-group">
+            <label for="ob-name">Your Name</label>
+            <input type="text" id="ob-name" class="input-field" placeholder="Enter your name" />
+          </div>
+          <div class="input-group">
+            <label for="ob-age">Age</label>
+            <input type="number" id="ob-age" class="input-field" placeholder="25" min="13" max="100" />
+          </div>
+          <div class="input-group full-width">
+            <label>Gender</label>
+            <div class="ob-toggle-group">
+              <button type="button" class="ob-toggle active" id="ob-gender-male" data-value="male">
+                <i data-lucide="user"></i> Male
+              </button>
+              <button type="button" class="ob-toggle" id="ob-gender-female" data-value="female">
+                <i data-lucide="user"></i> Female
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Body Metrics -->
+      <div class="onboarding-step" data-step="2">
+        <div class="ob-step-header">
+          <i data-lucide="ruler" class="ob-step-icon"></i>
+          <h2>Body Metrics</h2>
+          <p>We'll use this to calculate your daily calorie needs.</p>
+        </div>
+        <div class="ob-form-grid">
+          <div class="input-group">
+            <label for="ob-weight">Weight</label>
+            <div class="input-with-unit">
+              <input type="number" id="ob-weight" class="input-field" placeholder="70" min="30" max="300" step="0.1" />
+              <select id="ob-weight-unit" class="unit-select">
+                <option value="kg">kg</option>
+                <option value="lbs">lbs</option>
+              </select>
+            </div>
+          </div>
+          <div class="input-group">
+            <label for="ob-height">Height</label>
+            <div class="input-with-unit">
+              <input type="number" id="ob-height" class="input-field" placeholder="175" min="100" max="250" step="0.1" />
+              <select id="ob-height-unit" class="unit-select">
+                <option value="cm">cm</option>
+                <option value="ft">ft/in</option>
+              </select>
+            </div>
+          </div>
+          <div class="input-group hidden" id="ob-height-inches-group">
+            <label for="ob-height-inches">Inches</label>
+            <input type="number" id="ob-height-inches" class="input-field" placeholder="10" min="0" max="11" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Activity Level -->
+      <div class="onboarding-step" data-step="3">
+        <div class="ob-step-header">
+          <i data-lucide="activity" class="ob-step-icon"></i>
+          <h2>Activity Level</h2>
+          <p>How active are you on a typical day?</p>
+        </div>
+        <div class="ob-card-grid">
+          <button type="button" class="ob-selection-card" data-level="1.2">
+            <div class="ob-card-icon"><i data-lucide="armchair"></i></div>
+            <h3>Sedentary</h3>
+            <p>Little to no exercise, desk job</p>
+          </button>
+          <button type="button" class="ob-selection-card" data-level="1.375">
+            <div class="ob-card-icon"><i data-lucide="walk"></i></div>
+            <h3>Lightly Active</h3>
+            <p>Light exercise 1-3 days/week</p>
+          </button>
+          <button type="button" class="ob-selection-card active" data-level="1.55">
+            <div class="ob-card-icon"><i data-lucide="bike"></i></div>
+            <h3>Moderately Active</h3>
+            <p>Moderate exercise 3-5 days/week</p>
+          </button>
+          <button type="button" class="ob-selection-card" data-level="1.725">
+            <div class="ob-card-icon"><i data-lucide="dumbbell"></i></div>
+            <h3>Very Active</h3>
+            <p>Hard exercise 6-7 days/week</p>
+          </button>
+          <button type="button" class="ob-selection-card" data-level="1.9">
+            <div class="ob-card-icon"><i data-lucide="flame"></i></div>
+            <h3>Extremely Active</h3>
+            <p>Intense training, physical job</p>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 4: Goal -->
+      <div class="onboarding-step" data-step="4">
+        <div class="ob-step-header">
+          <i data-lucide="target" class="ob-step-icon"></i>
+          <h2>Your Goal</h2>
+          <p>What are you working towards?</p>
+        </div>
+        <div class="ob-card-grid goals">
+          <button type="button" class="ob-selection-card goal-card" data-goal="cut">
+            <div class="ob-card-icon"><i data-lucide="trending-down"></i></div>
+            <h3>Fat Loss</h3>
+            <p>Calorie deficit to lose body fat while preserving muscle</p>
+            <span class="goal-tag">-500 kcal/day</span>
+          </button>
+          <button type="button" class="ob-selection-card goal-card" data-goal="maintain">
+            <div class="ob-card-icon"><i data-lucide="equal"></i></div>
+            <h3>Maintenance</h3>
+            <p>Maintain current weight and body composition</p>
+            <span class="goal-tag">± 0 kcal/day</span>
+          </button>
+          <button type="button" class="ob-selection-card goal-card" data-goal="bulk">
+            <div class="ob-card-icon"><i data-lucide="trending-up"></i></div>
+            <h3>Muscle Gain</h3>
+            <p>Calorie surplus to build muscle and strength</p>
+            <span class="goal-tag">+300 kcal/day</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 5: Results -->
+      <div class="onboarding-step" data-step="5">
+        <div class="ob-step-header">
+          <i data-lucide="sparkles" class="ob-step-icon"></i>
+          <h2>Your Personalized Plan</h2>
+          <p>Here's what we recommend based on your profile.</p>
+        </div>
+        <div class="ob-results">
+          <div class="ob-result-hero">
+            <span class="ob-result-label">Daily Calorie Target</span>
+            <span class="ob-result-value" id="ob-tdee-value">2,200</span>
+            <span class="ob-result-unit">kcal / day</span>
+          </div>
+          <div class="ob-macro-cards">
+            <div class="ob-macro-card protein">
+              <i data-lucide="beef"></i>
+              <span class="macro-label">Protein</span>
+              <span class="macro-value" id="ob-protein-value">165</span>
+              <span class="macro-unit">g / day</span>
+            </div>
+            <div class="ob-macro-card carbs">
+              <i data-lucide="wheat"></i>
+              <span class="macro-label">Carbs</span>
+              <span class="macro-value" id="ob-carbs-value">220</span>
+              <span class="macro-unit">g / day</span>
+            </div>
+            <div class="ob-macro-card fats">
+              <i data-lucide="droplets"></i>
+              <span class="macro-label">Fats</span>
+              <span class="macro-value" id="ob-fat-value">73</span>
+              <span class="macro-unit">g / day</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Buttons -->
+      <div class="ob-nav">
+        <button type="button" id="ob-back-btn" class="btn btn-ghost hidden">
+          <i data-lucide="arrow-left"></i> Back
+        </button>
+        <button type="button" id="ob-next-btn" class="btn btn-primary">
+          Next <i data-lucide="arrow-right"></i>
+        </button>
+        <button type="button" id="ob-finish-btn" class="btn btn-primary hidden">
+          Start Tracking <i data-lucide="rocket"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- MAIN APP SHELL                               -->
+  <!-- ═══════════════════════════════════════════ -->
+  <section id="app-shell" class="screen">
+
+    <!-- Top Bar -->
+    <header id="app-header" class="app-header">
+      <div class="header-left">
+        <h1 class="header-logo">Cal<span class="accent">Track</span></h1>
+      </div>
+      <div class="header-right">
+        <button id="profile-btn" class="icon-btn" title="Profile">
+          <i data-lucide="user-circle"></i>
+        </button>
+        <button id="logout-btn" class="icon-btn" title="Sign out">
+          <i data-lucide="log-out"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- ═══════ DASHBOARD VIEW ═══════ -->
+    <div id="dashboard-view" class="view active">
+      <div class="view-content">
+        <!-- Greeting -->
+        <div class="dash-greeting">
+          <h2 id="greeting-text">Good evening, User</h2>
+          <p id="current-date">Thursday, May 22</p>
+        </div>
+
+        <!-- Main Calorie Ring -->
+        <div class="calorie-ring-container">
+          <svg class="calorie-ring" viewBox="0 0 200 200" id="calorie-ring-svg">
+            <circle class="ring-bg" cx="100" cy="100" r="85" />
+            <circle class="ring-fill" cx="100" cy="100" r="85" id="calorie-ring-fill" />
+          </svg>
+          <div class="calorie-ring-info">
+            <span class="ring-remaining" id="calories-remaining">2,200</span>
+            <span class="ring-label">remaining</span>
+            <div class="ring-detail">
+              <span><span id="calories-consumed">0</span> eaten</span>
+              <span class="ring-sep">•</span>
+              <span><span id="calories-target">2,200</span> target</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Macro Rings Row -->
+        <div class="macro-rings-row">
+          <!-- Protein -->
+          <div class="macro-ring-card">
+            <svg class="macro-ring" viewBox="0 0 80 80">
+              <circle class="ring-bg" cx="40" cy="40" r="32" />
+              <circle class="ring-fill protein" cx="40" cy="40" r="32" id="protein-ring-fill" />
+            </svg>
+            <div class="macro-ring-info">
+              <span class="macro-ring-value"><span id="protein-consumed">0</span>g</span>
+              <span class="macro-ring-label">Protein</span>
+              <span class="macro-ring-target">/ <span id="protein-target">165</span>g</span>
+            </div>
+          </div>
+          <!-- Carbs -->
+          <div class="macro-ring-card">
+            <svg class="macro-ring" viewBox="0 0 80 80">
+              <circle class="ring-bg" cx="40" cy="40" r="32" />
+              <circle class="ring-fill carbs" cx="40" cy="40" r="32" id="carbs-ring-fill" />
+            </svg>
+            <div class="macro-ring-info">
+              <span class="macro-ring-value"><span id="carbs-consumed">0</span>g</span>
+              <span class="macro-ring-label">Carbs</span>
+              <span class="macro-ring-target">/ <span id="carbs-target">220</span>g</span>
+            </div>
+          </div>
+          <!-- Fats -->
+          <div class="macro-ring-card">
+            <svg class="macro-ring" viewBox="0 0 80 80">
+              <circle class="ring-bg" cx="40" cy="40" r="32" />
+              <circle class="ring-fill fats" cx="40" cy="40" r="32" id="fat-ring-fill" />
+            </svg>
+            <div class="macro-ring-info">
+              <span class="macro-ring-value"><span id="fat-consumed">0</span>g</span>
+              <span class="macro-ring-label">Fats</span>
+              <span class="macro-ring-target">/ <span id="fat-target">73</span>g</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="dash-stats-row">
+          <div class="dash-stat-card">
+            <i data-lucide="utensils"></i>
+            <span class="stat-value" id="meals-logged-count">0</span>
+            <span class="stat-label">Meals Today</span>
+          </div>
+          <div class="dash-stat-card">
+            <i data-lucide="flame"></i>
+            <span class="stat-value" id="dash-streak-count">0</span>
+            <span class="stat-label">Day Streak</span>
+          </div>
+          <div class="dash-stat-card">
+            <i data-lucide="trophy"></i>
+            <span class="stat-value" id="dash-badges-count">0</span>
+            <span class="stat-label">Badges</span>
+          </div>
+        </div>
+
+        <!-- Today's Meals Quick View -->
+        <div class="dash-meals-preview">
+          <div class="section-header">
+            <h3>Today's Meals</h3>
+            <button class="btn btn-ghost btn-sm" id="dash-view-diary-btn">View All</button>
+          </div>
+          <div id="dash-meals-list" class="dash-meals-list">
+            <div class="empty-state-mini">
+              <i data-lucide="plus-circle"></i>
+              <p>No meals logged yet. Tap + to add your first meal!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Floating Action Button -->
+      <button id="quick-add-btn" class="fab" title="Log a meal">
+        <i data-lucide="plus"></i>
+      </button>
+    </div>
+
+    <!-- ═══════ DIARY VIEW ═══════ -->
+    <div id="diary-view" class="view">
+      <div class="view-content">
+        <div class="diary-header">
+          <button id="diary-prev-btn" class="icon-btn"><i data-lucide="chevron-left"></i></button>
+          <h2 id="diary-date">Today — May 22</h2>
+          <button id="diary-next-btn" class="icon-btn"><i data-lucide="chevron-right"></i></button>
+        </div>
+
+        <!-- Daily Totals Bar -->
+        <div class="diary-totals">
+          <div class="diary-total-item">
+            <span class="dt-value" id="diary-total-calories">0</span>
+            <span class="dt-label">kcal</span>
+          </div>
+          <div class="diary-total-sep"></div>
+          <div class="diary-total-item protein">
+            <span class="dt-value" id="diary-total-protein">0</span>
+            <span class="dt-label">Protein</span>
+          </div>
+          <div class="diary-total-item carbs">
+            <span class="dt-value" id="diary-total-carbs">0</span>
+            <span class="dt-label">Carbs</span>
+          </div>
+          <div class="diary-total-item fats">
+            <span class="dt-value" id="diary-total-fat">0</span>
+            <span class="dt-label">Fats</span>
+          </div>
+        </div>
+
+        <!-- Meal Groups -->
+        <div class="diary-meals">
+          <div class="meal-group" id="diary-breakfast">
+            <div class="meal-group-header">
+              <div class="meal-group-title">
+                <i data-lucide="sunrise"></i>
+                <h3>Breakfast</h3>
+              </div>
+              <button class="btn btn-ghost btn-sm meal-add-btn" data-meal="breakfast">
+                <i data-lucide="plus"></i>
+              </button>
+            </div>
+            <div class="meal-group-items" data-meal="breakfast"></div>
+          </div>
+
+          <div class="meal-group" id="diary-lunch">
+            <div class="meal-group-header">
+              <div class="meal-group-title">
+                <i data-lucide="sun"></i>
+                <h3>Lunch</h3>
+              </div>
+              <button class="btn btn-ghost btn-sm meal-add-btn" data-meal="lunch">
+                <i data-lucide="plus"></i>
+              </button>
+            </div>
+            <div class="meal-group-items" data-meal="lunch"></div>
+          </div>
+
+          <div class="meal-group" id="diary-dinner">
+            <div class="meal-group-header">
+              <div class="meal-group-title">
+                <i data-lucide="moon"></i>
+                <h3>Dinner</h3>
+              </div>
+              <button class="btn btn-ghost btn-sm meal-add-btn" data-meal="dinner">
+                <i data-lucide="plus"></i>
+              </button>
+            </div>
+            <div class="meal-group-items" data-meal="dinner"></div>
+          </div>
+
+          <div class="meal-group" id="diary-snacks">
+            <div class="meal-group-header">
+              <div class="meal-group-title">
+                <i data-lucide="cookie"></i>
+                <h3>Snacks</h3>
+              </div>
+              <button class="btn btn-ghost btn-sm meal-add-btn" data-meal="snacks">
+                <i data-lucide="plus"></i>
+              </button>
+            </div>
+            <div class="meal-group-items" data-meal="snacks"></div>
+          </div>
+        </div>
+
+        <!-- Frequently Logged -->
+        <div class="frequent-section">
+          <div class="section-header">
+            <h3><i data-lucide="clock"></i> Frequently Logged</h3>
+          </div>
+          <div id="frequent-foods" class="frequent-foods-grid">
+            <p class="empty-hint">Your most-logged foods will appear here.</p>
+          </div>
+        </div>
+      </div>
+
+      <button class="fab" id="diary-add-btn" title="Log a meal">
+        <i data-lucide="plus"></i>
+      </button>
+    </div>
+
+    <!-- ═══════ ANALYTICS VIEW ═══════ -->
+    <div id="analytics-view" class="view">
+      <div class="view-content">
+        <div class="analytics-header">
+          <h2>Analytics</h2>
+          <p>Track your progress over time</p>
+        </div>
+
+        <!-- Weekly Summary -->
+        <div class="analytics-summary-row">
+          <div class="analytics-stat-card">
+            <span class="astat-label">Avg Calories</span>
+            <span class="astat-value" id="avg-calories">—</span>
+          </div>
+          <div class="analytics-stat-card">
+            <span class="astat-label">Avg Protein</span>
+            <span class="astat-value" id="avg-protein">—</span>
+          </div>
+          <div class="analytics-stat-card">
+            <span class="astat-label">Consistency</span>
+            <span class="astat-value" id="consistency-score">—</span>
+          </div>
+        </div>
+
+        <!-- Calorie Chart -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h3>Daily Calories</h3>
+            <span class="chart-subtitle">Consumed vs Target — Past 7 Days</span>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="calorie-chart-canvas"></canvas>
+          </div>
+        </div>
+
+        <!-- Weight Chart -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <h3>Weight Trend</h3>
+              <span class="chart-subtitle">Track your body weight</span>
+            </div>
+            <div class="chart-period-toggle">
+              <button class="period-btn active" id="weight-period-7">7D</button>
+              <button class="period-btn" id="weight-period-30">30D</button>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="weight-chart-canvas"></canvas>
+          </div>
+          <div class="weight-log-form">
+            <div class="input-group input-inline">
+              <input type="number" id="weight-input" class="input-field" placeholder="Enter weight (kg)" step="0.1" min="30" max="300" />
+              <button id="weight-log-btn" class="btn btn-primary btn-sm">Log Weight</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ ACHIEVEMENTS VIEW ═══════ -->
+    <div id="achievements-view" class="view">
+      <div class="view-content">
+        <div class="achievements-header">
+          <h2>Achievements</h2>
+          <p>Keep the momentum going!</p>
+        </div>
+
+        <!-- Streak Display -->
+        <div class="streak-hero">
+          <div class="streak-flame" id="streak-fire">
+            <i data-lucide="flame"></i>
+          </div>
+          <div class="streak-info">
+            <span class="streak-count" id="streak-display">0</span>
+            <span class="streak-label">Day Streak</span>
+          </div>
+          <p class="streak-message" id="streak-message">Log a meal to start your streak!</p>
+        </div>
+
+        <!-- Badges Grid -->
+        <div class="badges-section">
+          <h3>Badges</h3>
+          <div id="badges-grid" class="badges-grid">
+            <!-- Badges will be rendered by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ MEAL LOG MODAL ═══════ -->
+    <div id="meal-log-modal" class="modal-overlay hidden">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>Log a Meal</h2>
+          <button id="meal-log-close-btn" class="icon-btn"><i data-lucide="x"></i></button>
+        </div>
+
+        <!-- Meal Type Selector -->
+        <div class="meal-type-selector">
+          <button class="meal-type-btn active" data-meal="breakfast">
+            <i data-lucide="sunrise"></i> Breakfast
+          </button>
+          <button class="meal-type-btn" data-meal="lunch">
+            <i data-lucide="sun"></i> Lunch
+          </button>
+          <button class="meal-type-btn" data-meal="dinner">
+            <i data-lucide="moon"></i> Dinner
+          </button>
+          <button class="meal-type-btn" data-meal="snacks">
+            <i data-lucide="cookie"></i> Snacks
+          </button>
+        </div>
+
+        <!-- Tabs -->
+        <div id="meal-log-tabs" class="tab-bar">
+          <button class="tab-btn active" data-tab="nlp">
+            <i data-lucide="message-square"></i> Describe
+          </button>
+          <button class="tab-btn" data-tab="image">
+            <i data-lucide="camera"></i> Photo
+          </button>
+          <button class="tab-btn" data-tab="manual">
+            <i data-lucide="edit-3"></i> Manual
+          </button>
+        </div>
+
+        <!-- NLP Tab -->
+        <div id="nlp-tab" class="tab-panel active">
+          <div class="nlp-input-area">
+            <textarea id="nlp-input" class="input-field textarea" placeholder="Describe your meal...&#10;e.g. &quot;3 scrambled eggs, a slice of sourdough toast, and an avocado&quot;" rows="3"></textarea>
+            <button id="nlp-parse-btn" class="btn btn-primary btn-full">
+              <i data-lucide="sparkles"></i> Analyze Food
+            </button>
+          </div>
+          <div id="nlp-results" class="parsed-results hidden">
+            <h4>Detected Items</h4>
+            <div id="nlp-items-list" class="parsed-items-list"></div>
+            <div class="parsed-total" id="nlp-total"></div>
+            <button id="nlp-confirm-btn" class="btn btn-primary btn-full">
+              <i data-lucide="check"></i> Confirm & Log
+            </button>
+          </div>
+        </div>
+
+        <!-- Image Tab -->
+        <div id="image-tab" class="tab-panel">
+          <div id="image-drop-zone" class="drop-zone">
+            <i data-lucide="image-plus" class="drop-zone-icon"></i>
+            <p>Upload or take a photo of your meal</p>
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem; position: relative; z-index: 2;">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('camera-file-input').click()">
+                <i data-lucide="camera"></i> Camera
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('image-file-input').click()">
+                <i data-lucide="upload"></i> Gallery
+              </button>
+            </div>
+            <input type="file" id="camera-file-input" accept="image/*" capture="environment" class="drop-zone-input" style="display: none;" />
+            <input type="file" id="image-file-input" accept="image/*" class="drop-zone-input" style="display: none;" />
+          </div>
+          <div id="image-processing" class="processing-state hidden">
+            <div class="processing-spinner">
+              <div class="spinner-ring"></div>
+              <div class="spinner-ring"></div>
+              <div class="spinner-ring"></div>
+            </div>
+            <p>Analyzing your meal with AI...</p>
+          </div>
+          <div id="image-results" class="parsed-results hidden">
+            <h4>Detected Items</h4>
+            <div id="image-items-list" class="parsed-items-list"></div>
+            <div class="parsed-total" id="image-total"></div>
+            <button id="image-confirm-btn" class="btn btn-primary btn-full">
+              <i data-lucide="check"></i> Confirm & Log
+            </button>
+          </div>
+        </div>
+
+        <!-- Manual Tab -->
+        <div id="manual-tab" class="tab-panel">
+          <div class="manual-form">
+            <div class="input-group">
+              <label for="manual-food-name">Food Name</label>
+              <input type="text" id="manual-food-name" class="input-field" placeholder="e.g. Grilled Chicken Breast" />
+            </div>
+            <div class="manual-macros-grid">
+              <div class="input-group">
+                <label for="manual-calories">Calories</label>
+                <input type="number" id="manual-calories" class="input-field" placeholder="0" min="0" />
+              </div>
+              <div class="input-group">
+                <label for="manual-protein">Protein (g)</label>
+                <input type="number" id="manual-protein" class="input-field" placeholder="0" min="0" step="0.1" />
+              </div>
+              <div class="input-group">
+                <label for="manual-carbs">Carbs (g)</label>
+                <input type="number" id="manual-carbs" class="input-field" placeholder="0" min="0" step="0.1" />
+              </div>
+              <div class="input-group">
+                <label for="manual-fat">Fat (g)</label>
+                <input type="number" id="manual-fat" class="input-field" placeholder="0" min="0" step="0.1" />
+              </div>
+            </div>
+            <div class="input-group">
+              <label for="manual-serving">Serving Size</label>
+              <input type="text" id="manual-serving" class="input-field" placeholder="e.g. 1 cup, 200g" />
+            </div>
+            <button id="manual-add-btn" class="btn btn-primary btn-full">
+              <i data-lucide="plus-circle"></i> Add to Log
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ BOTTOM NAVIGATION ═══════ -->
+    <nav id="bottom-nav" class="bottom-nav">
+      <button class="nav-item active" id="nav-dashboard" data-view="dashboard">
+        <i data-lucide="layout-dashboard"></i>
+        <span>Dashboard</span>
+      </button>
+      <button class="nav-item" id="nav-diary" data-view="diary">
+        <i data-lucide="book-open"></i>
+        <span>Diary</span>
+      </button>
+      <button class="nav-item" id="nav-analytics" data-view="analytics">
+        <i data-lucide="bar-chart-3"></i>
+        <span>Analytics</span>
+      </button>
+      <button class="nav-item" id="nav-achievements" data-view="achievements">
+        <i data-lucide="award"></i>
+        <span>Badges</span>
+      </button>
+    </nav>
+  </section>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="js/utils.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/food-database.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/gemini.js"></script>
+  <script src="js/onboarding.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/meal-logger.js"></script>
+  <script src="js/diary.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/achievements.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

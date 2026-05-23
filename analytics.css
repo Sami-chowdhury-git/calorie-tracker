@@ -1,0 +1,66 @@
+/* ═══════════════════════════════════════════ */
+/* ANALYTICS — Charts & Stats                  */
+/* ═══════════════════════════════════════════ */
+
+.analytics-header { padding: 72px 0 8px; }
+.analytics-header h2 { font-size: 1.5rem; }
+.analytics-header p { color: var(--text-secondary); font-size: 0.85rem; margin-top: 2px; }
+
+.analytics-summary-row {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 12px; margin: 16px 0;
+}
+.analytics-stat-card {
+  background: var(--bg-card); border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg); padding: 16px; text-align: center;
+  backdrop-filter: blur(8px);
+}
+.astat-label {
+  font-size: 0.72rem; color: var(--text-muted); display: block;
+  margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.astat-value {
+  font-family: 'Outfit'; font-size: 1.25rem; font-weight: 700;
+  color: var(--accent-secondary);
+}
+
+/* Chart Cards */
+.chart-card {
+  background: var(--bg-card); border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px;
+  backdrop-filter: blur(8px);
+}
+.chart-card-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 16px;
+}
+.chart-card-header h3 { font-size: 1rem; }
+.chart-subtitle { font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 2px; }
+
+.chart-wrapper { position: relative; height: 220px; width: 100%; }
+
+/* Period Toggle */
+.chart-period-toggle {
+  display: flex; gap: 4px; background: var(--bg-primary);
+  border-radius: var(--radius-full); padding: 3px;
+}
+.period-btn {
+  padding: 6px 14px; border-radius: var(--radius-full);
+  font-size: 0.75rem; font-weight: 600;
+  background: transparent; border: none;
+  color: var(--text-muted); cursor: pointer;
+  transition: var(--transition);
+}
+.period-btn.active { background: var(--accent-primary); color: #fff; }
+.period-btn:hover:not(.active) { color: var(--text-secondary); }
+
+/* Weight Log */
+.weight-log-form {
+  margin-top: 16px; padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+}
+
+@media (max-width: 480px) {
+  .analytics-summary-row { grid-template-columns: 1fr; }
+  .chart-wrapper { height: 180px; }
+}

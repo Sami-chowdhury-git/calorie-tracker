@@ -1,0 +1,92 @@
+/* ═══════════════════════════════════════════ */
+/* DIARY — Food Diary View                     */
+/* ═══════════════════════════════════════════ */
+
+.diary-header {
+  display: flex; align-items: center; justify-content: center;
+  gap: 16px; padding: 72px 0 16px;
+}
+.diary-header h2 { font-size: 1.1rem; min-width: 180px; text-align: center; }
+
+/* Totals Bar */
+.diary-totals {
+  display: flex; justify-content: center; gap: 16px;
+  background: var(--bg-card); border-radius: var(--radius-lg);
+  padding: 14px 20px; margin-bottom: 20px;
+  border: 1px solid var(--border-color); backdrop-filter: blur(8px);
+}
+.diary-total-sep { width: 1px; background: var(--border-color); }
+.diary-total-item { text-align: center; min-width: 48px; }
+.dt-value { font-weight: 700; font-size: 1.1rem; display: block; }
+.dt-label { font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.diary-total-item.protein .dt-value { color: var(--protein-color); }
+.diary-total-item.carbs .dt-value { color: var(--carbs-color); }
+.diary-total-item.fats .dt-value { color: var(--fats-color); }
+
+/* Meal Groups */
+.diary-meals { display: flex; flex-direction: column; gap: 16px; }
+.meal-group {
+  background: var(--bg-card); border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color); overflow: hidden;
+  backdrop-filter: blur(8px);
+}
+.meal-group-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 16px; border-bottom: 1px solid rgba(99,102,241,0.06);
+}
+.meal-group-title {
+  display: flex; align-items: center; gap: 10px;
+}
+.meal-group-title i { color: var(--accent-primary); width: 18px; height: 18px; }
+.meal-group-title h3 { font-size: 0.95rem; }
+
+.meal-group-items { padding: 0; }
+.meal-empty {
+  padding: 20px 16px; text-align: center; color: var(--text-muted);
+  font-size: 0.82rem; font-style: italic;
+}
+
+/* Meal Items */
+.meal-item {
+  display: flex; align-items: center; padding: 12px 16px;
+  border-bottom: 1px solid rgba(99,102,241,0.05);
+  transition: var(--transition);
+}
+.meal-item:last-child { border-bottom: none; }
+.meal-item:hover { background: rgba(99,102,241,0.04); }
+
+.meal-item-info { flex: 1; min-width: 0; }
+.meal-item-name {
+  font-weight: 500; font-size: 0.9rem; display: block;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.meal-item-serving { font-size: 0.72rem; color: var(--text-muted); }
+.meal-item-cals {
+  font-weight: 600; color: var(--accent-secondary);
+  font-size: 0.88rem; margin-right: 8px; flex-shrink: 0;
+}
+.meal-item-delete {
+  width: 30px; height: 30px; flex-shrink: 0;
+}
+.meal-item-delete:hover { color: var(--danger) !important; }
+
+/* Frequent Foods */
+.frequent-section { margin-top: 28px; }
+.frequent-foods-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;
+}
+.frequent-food-card {
+  background: var(--bg-tertiary); border: 1px solid var(--border-color);
+  border-radius: var(--radius-md); padding: 12px; cursor: pointer;
+  transition: var(--transition);
+}
+.frequent-food-card:hover {
+  border-color: var(--accent-primary); background: rgba(99,102,241,0.05);
+  transform: translateY(-1px);
+}
+.ff-name { font-weight: 500; font-size: 0.85rem; display: block; margin-bottom: 2px; }
+.ff-cal { font-size: 0.72rem; color: var(--text-muted); }
+.empty-hint {
+  color: var(--text-muted); font-size: 0.82rem;
+  grid-column: span 2; text-align: center; padding: 24px;
+}
